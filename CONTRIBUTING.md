@@ -7,6 +7,7 @@ Thank you for your interest in contributing to TheFuck-rs! This project is a Rus
 - [How to Contribute](#-how-to-contribute)
 - [Development Environment Setup](#-development-environment-setup)
 - [Development Workflow](#-development-workflow)
+- [CI/CD Pipeline](#-cicd-pipeline)
 - [Code Guidelines](#-code-guidelines)
 - [Testing](#-testing)
 - [Bug Reports](#-bug-reports)
@@ -161,6 +162,64 @@ git push origin feature/your-feature-name
 3. Select your branch
 4. Fill out PR template
 5. Submit PR
+
+## 🚀 CI/CD Pipeline
+
+The project uses GitHub Actions for continuous integration and deployment. All workflows are located in the `.github/workflows/` directory.
+
+### Automated Checks
+
+When you create a pull request, the following checks will run automatically:
+
+- **Code Formatting**: Ensures code follows Rust formatting standards
+- **Linting**: Runs clippy to check for code quality issues
+- **Tests**: Runs all unit and integration tests
+- **Build**: Compiles the project for multiple platforms
+- **Security Audit**: Checks for known vulnerabilities
+- **Coverage**: Generates test coverage reports
+
+### Local Development
+
+To run CI checks locally before pushing:
+
+```bash
+# Format code
+cargo fmt --all -- --check
+
+# Run linter
+cargo clippy --all-targets --all-features -- -D warnings
+
+# Run tests
+cargo test --all-targets --all-features
+
+# Check builds
+cargo check --all-targets --all-features
+
+# Security audit
+cargo audit
+
+# Generate documentation
+cargo doc --no-deps --all-features
+```
+
+### Supported Platforms
+
+The CI pipeline builds and tests on:
+
+- **Linux**: x86_64, aarch64
+- **macOS**: x86_64, aarch64  
+- **Windows**: x86_64
+
+### Release Process in CI/CD
+
+Releases are automated and triggered by version tags:
+
+- Push a tag like `v1.0.0` to trigger release workflow
+- Multi-platform binaries are automatically built
+- Release notes are generated from commits
+- Assets are uploaded to GitHub releases
+
+For detailed CI/CD documentation, see [`.github/CONTRIBUTING.md`](.github/CONTRIBUTING.md).
 
 ## 📝 Code Guidelines
 

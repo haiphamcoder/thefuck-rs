@@ -1,10 +1,14 @@
-# CI/CD Pipeline
+# Contributing to thefuck-rs
+
+This document contains information for contributors to the thefuck-rs project.
+
+## CI/CD Pipeline
 
 This directory contains the GitHub Actions workflows for the thefuck-rs project.
 
-## Workflows
+### Workflows
 
-### 1. CI (`ci.yml`)
+#### 1. CI (`ci.yml`)
 
 Main continuous integration workflow that runs on every push and pull request.
 
@@ -21,7 +25,7 @@ Main continuous integration workflow that runs on every push and pull request.
 - Push to `main` or `develop` branches
 - Pull requests to `main` or `develop` branches
 
-### 2. Release (`release.yml`)
+#### 2. Release (`release.yml`)
 
 Automated release workflow that creates GitHub releases with binaries.
 
@@ -35,7 +39,7 @@ Automated release workflow that creates GitHub releases with binaries.
 
 - Push of version tags (e.g., `v1.0.0`)
 
-### 3. Dependabot (`dependabot.yml`)
+#### 3. Dependabot (`dependabot.yml`)
 
 Handles dependency updates from Dependabot.
 
@@ -49,7 +53,7 @@ Handles dependency updates from Dependabot.
 
 - Pull requests from Dependabot
 
-### 4. Pages (`pages.yml`)
+#### 4. Pages (`pages.yml`)
 
 Deploys documentation to GitHub Pages.
 
@@ -64,7 +68,7 @@ Deploys documentation to GitHub Pages.
 - Push to `main` branch
 - Manual workflow dispatch
 
-### 5. Coverage (`coverage.yml`)
+#### 5. Coverage (`coverage.yml`)
 
 Generates and reports code coverage.
 
@@ -79,9 +83,9 @@ Generates and reports code coverage.
 - Push to `main` or `develop` branches
 - Pull requests to `main` or `develop` branches
 
-## Configuration Files
+### Configuration Files
 
-### Dependabot (`dependabot.yml`)
+#### Dependabot (`dependabot.yml`)
 
 Configures automatic dependency updates:
 
@@ -141,3 +145,40 @@ cargo doc --no-deps --all-features
 - Check the GitHub Actions logs for detailed error messages
 - Review the workflow files for configuration issues
 - Ensure all required secrets are properly configured
+
+## Development Guidelines
+
+### Code Style
+
+- Follow Rust formatting standards with `cargo fmt`
+- Use clippy for linting: `cargo clippy --all-targets --all-features -- -D warnings`
+- Write comprehensive tests for new features
+- Document public APIs with doc comments
+
+### Commit Messages
+
+Use conventional commit format:
+
+- `feat:` for new features
+- `fix:` for bug fixes
+- `docs:` for documentation changes
+- `style:` for formatting changes
+- `refactor:` for code refactoring
+- `test:` for adding tests
+- `chore:` for maintenance tasks
+
+### Pull Request Process
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Ensure all CI checks pass
+6. Submit a pull request with a clear description
+
+### Testing
+
+- Write unit tests for all new functionality
+- Ensure test coverage remains above 70%
+- Run integration tests for complex features
+- Test on multiple platforms when possible
