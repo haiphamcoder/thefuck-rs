@@ -96,9 +96,7 @@ impl<T> ErrorContext<T> for TheFuckResult<T> {
         C: std::fmt::Display,
     {
         self.map_err(|e| match e {
-            TheFuckError::ParseError(msg) => {
-                TheFuckError::ParseError(format!("{context}: {msg}"))
-            }
+            TheFuckError::ParseError(msg) => TheFuckError::ParseError(format!("{context}: {msg}")),
             TheFuckError::ShellExecutionError(msg) => {
                 TheFuckError::ShellExecutionError(format!("{context}: {msg}"))
             }
@@ -126,9 +124,7 @@ impl<T> ErrorContext<T> for TheFuckResult<T> {
             TheFuckError::NetworkError(msg) => {
                 TheFuckError::NetworkError(format!("{context}: {msg}"))
             }
-            TheFuckError::PathError(msg) => {
-                TheFuckError::PathError(format!("{context}: {msg}"))
-            }
+            TheFuckError::PathError(msg) => TheFuckError::PathError(format!("{context}: {msg}")),
             _ => e,
         })
     }
