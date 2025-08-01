@@ -1,0 +1,10 @@
+[package]
+name = "thefuck-rs"
+version = "0.0.1"
+edition = "2024"
+authors = ["Hai Pham Ngoc <ngochai285nd@gmail.com>"]
+description = "A magnificent app which corrects your previous console command"
+license = "MIT"
+repository = "https://github.com/haiphamcoder/thefuck-rs"
+
+[dependencies]
