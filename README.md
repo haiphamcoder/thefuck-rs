@@ -27,13 +27,13 @@ This project aims to rewrite the popular Python-based "TheFuck" tool in Rust, pr
 
 #### Core Dependencies
 
-- [ ] Add CLI framework (clap)
-- [ ] Add async runtime (tokio)
-- [ ] Add error handling (anyhow, thiserror)
-- [ ] Add configuration management (serde, toml)
-- [ ] Add terminal UI (crossterm, tui)
-- [ ] Add logging (tracing)
-- [ ] Add testing framework (proptest, mockall)
+- [x] Add CLI framework (clap)
+- [x] Add async runtime (tokio)
+- [x] Add error handling (anyhow, thiserror)
+- [x] Add configuration management (serde, toml)
+- [x] Add terminal UI (crossterm, tui)
+- [x] Add logging (tracing)
+- [x] Add testing framework (proptest, mockall)
 
 #### Basic Structure
 
