@@ -79,7 +79,7 @@ jobs:
               path: ${{ matrix.artifact_name }}.*
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             thefuck-rs-linux-x86_64.tar.gz
