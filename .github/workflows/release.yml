@@ -1,0 +1,94 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build for multiple platforms
+        strategy:
+          matrix:
+            include:
+              - target: x86_64-unknown-linux-gnu
+                os: ubuntu-latest
+                name: Linux x86_64
+                artifact_name: thefuck-rs-linux-x86_64
+              - target: x86_64-apple-darwin
+                os: macos-latest
+                name: macOS x86_64
+                artifact_name: thefuck-rs-macos-x86_64
+              - target: x86_64-pc-windows-msvc
+                os: windows-latest
+                name: Windows x86_64
+                artifact_name: thefuck-rs-windows-x86_64.exe
+              - target: aarch64-unknown-linux-gnu
+                os: ubuntu-latest
+                name: Linux aarch64
+                artifact_name: thefuck-rs-linux-aarch64
+              - target: aarch64-apple-darwin
+                os: macos-latest
+                name: macOS aarch64
+                artifact_name: thefuck-rs-macos-aarch64
+
+        runs-on: ${{ matrix.os }}
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+
+          - name: Install Rust toolchain
+            uses: dtolnay/rust-toolchain@stable
+            with:
+              target: ${{ matrix.target }}
+
+          - name: Cache dependencies
+            uses: Swatinem/rust-cache@v2
+
+          - name: Build
+            run: cargo build --release --target ${{ matrix.target }}
+
+          - name: Create release archive
+            run: |
+              cd target/${{ matrix.target }}/release
+              if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+                7z a ../../../${{ matrix.artifact_name }}.zip thefuck-rs.exe
+              else
+                tar -czf ../../../${{ matrix.artifact_name }}.tar.gz thefuck-rs
+              fi
+
+          - name: Upload build artifacts
+            uses: actions/upload-artifact@v3
+            with:
+              name: ${{ matrix.artifact_name }}
+              path: ${{ matrix.artifact_name }}.*
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            thefuck-rs-linux-x86_64.tar.gz
+            thefuck-rs-macos-x86_64.tar.gz
+            thefuck-rs-windows-x86_64.exe.zip
+            thefuck-rs-linux-aarch64.tar.gz
+            thefuck-rs-macos-aarch64.tar.gz
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 

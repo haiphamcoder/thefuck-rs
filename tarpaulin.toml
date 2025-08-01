@@ -1,0 +1,48 @@
+# Tarpaulin configuration for thefuck-rs
+[run]
+# Run mode
+mode = "Tests"
+
+# Output formats
+out = ["Html", "Xml"]
+
+# Output directory
+output-dir = "coverage"
+
+# Include test targets
+target-dir = "target"
+
+# Coverage threshold (percentage)
+fail-under = 70
+
+# Exclude patterns
+exclude-files = [
+    "*/tests/*",
+    "*/examples/*",
+    "*/benches/*",
+    "*/src/bin/*",
+]
+
+# Include patterns
+include-files = [
+    "src/**/*.rs",
+]
+
+# Ignore common patterns
+ignore-panics = true
+ignore-tests = false
+
+# Verbose output
+verbose = true
+
+# Generate HTML report
+html = true
+
+# Generate XML report for CI
+xml = true
+
+# Coverage type
+coverage-type = "Line"
+
+# Engine
+engine = "Auto" 

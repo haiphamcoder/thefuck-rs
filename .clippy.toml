@@ -1,0 +1,16 @@
+# Clippy configuration for thefuck-rs
+msrv = "1.70"
+
+# Allow some lints that are too strict for this project
+allow-comparison-to-zero = false
+allow-dbg-in-tests = true
+allow-expect-in-tests = true
+allow-panic-in-tests = true
+allow-print-in-tests = true
+allow-unwrap-in-tests = true
+
+# Thresholds
+too-many-arguments-threshold = 8
+type-complexity-threshold = 25
+cognitive-complexity-threshold = 30
+too-many-lines-threshold = 300 
