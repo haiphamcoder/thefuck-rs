@@ -47,9 +47,9 @@ This project aims to rewrite the popular Python-based "TheFuck" tool in Rust, pr
 
 #### Command Types
 
-- [ ] Implement `Command` struct
-- [ ] Add command parsing logic
-- [ ] Add command validation
+- [x] Implement `Command` struct
+- [x] Add command parsing logic
+- [x] Add command validation
 - [ ] Add command serialization/deserialization
 - [ ] Add command comparison traits
 

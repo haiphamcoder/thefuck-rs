@@ -34,23 +34,96 @@ impl Command {
         }
     }
 
+    /// Creates a new command with environment variables
+    #[allow(clippy::type_complexity)]
+    pub fn with_env(mut self, env: HashMap<String, String>) -> Self {
+        self.env = env;
+        self
+    }
+
+    /// Creates a new command with a specific working directory
+    pub fn with_cwd(mut self, cwd: String) -> Self {
+        self.cwd = cwd;
+        self
+    }
+
+    /// Creates a new command with a specific timestamp
+    #[allow(clippy::type_complexity)]
+    pub fn with_timestamp(mut self, timestamp: chrono::DateTime<chrono::Utc>) -> Self {
+        self.timestamp = timestamp;
+        self
+    }
+
+    /// Gets the command text as a string slice
+    pub fn as_str(&self) -> &str {
+        &self.text
+    }
+
+    /// Gets the command text trimmed of whitespace
+    pub fn trimmed(&self) -> &str {
+        self.text.trim()
+    }
+
+    /// Checks if the command is empty (after trimming)
+    pub fn is_empty(&self) -> bool {
+        self.trimmed().is_empty()
+    }
+
+    /// Gets the first word of the command (the program name)
+    #[allow(clippy::type_complexity)]
+    pub fn program(&self) -> Option<&str> {
+        self.trimmed().split_whitespace().next()
+    }
+
+    /// Gets all arguments as a vector of strings
+    #[allow(clippy::type_complexity)]
+    pub fn arguments(&self) -> Vec<&str> {
+        self.trimmed().split_whitespace().skip(1).collect()
+    }
+
+    /// Gets the number of arguments
+    pub fn argument_count(&self) -> usize {
+        self.arguments().len()
+    }
+
+    /// Checks if the command has any arguments
+    pub fn has_arguments(&self) -> bool {
+        self.argument_count() > 0
+    }
+
+    /// Gets a specific argument by index
+    #[allow(clippy::type_complexity)]
+    pub fn argument(&self, index: usize) -> Option<&str> {
+        self.arguments().get(index).copied()
+    }
+
+    /// Checks if the command starts with a specific program
+    pub fn starts_with(&self, program: &str) -> bool {
+        self.program()
+            .map(|p| p.eq_ignore_ascii_case(program))
+            .unwrap_or(false)
+    }
+
+    /// Checks if the command contains a specific argument
+    pub fn contains_argument(&self, arg: &str) -> bool {
+        self.arguments().iter().any(|a| a.eq_ignore_ascii_case(arg))
+    }
+
     /// Parses the command and returns structured data
     #[allow(clippy::type_complexity)]
     pub fn parse(&self) -> TheFuckResult<ParsedCommand> {
-        // TODO: Implement command parsing logic
+        let trimmed = self.trimmed();
+        if trimmed.is_empty() {
+            return Err(TheFuckError::parse_error("Command text is empty"));
+        }
+
+        let parts: Vec<&str> = trimmed.split_whitespace().collect();
+        let program = parts.first().unwrap_or(&"").to_string();
+        let arguments = parts.iter().skip(1).map(|s| s.to_string()).collect();
+
         Ok(ParsedCommand {
-            program: self
-                .text
-                .split_whitespace()
-                .next()
-                .unwrap_or("")
-                .to_string(),
-            arguments: self
-                .text
-                .split_whitespace()
-                .skip(1)
-                .map(|s| s.to_string())
-                .collect(),
+            program,
+            arguments,
             original: self.text.clone(),
         })
     }
@@ -58,12 +131,62 @@ impl Command {
     /// Validates the command
     #[allow(clippy::type_complexity)]
     pub fn validate(&self) -> TheFuckResult<()> {
-        if self.text.trim().is_empty() {
+        if self.is_empty() {
             return Err(TheFuckError::validation_error(
                 "Command text cannot be empty",
             ));
         }
         Ok(())
+    }
+
+    /// Creates a new command with modified text
+    pub fn with_text(&self, text: String) -> Self {
+        Self {
+            text,
+            shell: self.shell.clone(),
+            timestamp: self.timestamp,
+            env: self.env.clone(),
+            cwd: self.cwd.clone(),
+        }
+    }
+
+    /// Gets the command age in seconds
+    pub fn age_seconds(&self) -> i64 {
+        let now = chrono::Utc::now();
+        (now - self.timestamp).num_seconds()
+    }
+
+    /// Gets the command age in minutes
+    pub fn age_minutes(&self) -> i64 {
+        self.age_seconds() / 60
+    }
+
+    /// Checks if the command is recent (within the last hour)
+    pub fn is_recent(&self) -> bool {
+        self.age_minutes() < 60
+    }
+
+    /// Gets an environment variable value
+    #[allow(clippy::type_complexity)]
+    pub fn get_env(&self, key: &str) -> Option<&String> {
+        self.env.get(key)
+    }
+
+    /// Sets an environment variable
+    pub fn set_env(&mut self, key: String, value: String) {
+        self.env.insert(key, value);
+    }
+
+    /// Removes an environment variable
+    #[allow(clippy::type_complexity)]
+    pub fn remove_env(&mut self, key: &str) -> Option<String> {
+        self.env.remove(key)
+    }
+}
+
+impl fmt::Display for Command {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.text)
     }
 }
 
@@ -258,6 +381,114 @@ mod tests {
 
         let cmd = Command::new("git status".to_string(), Shell::Bash);
         assert!(cmd.validate().is_ok());
+    }
+
+    #[test]
+    fn test_command_builder_methods() {
+        let mut env = HashMap::new();
+        env.insert("PATH".to_string(), "/usr/bin".to_string());
+
+        let cmd = Command::new("git status".to_string(), Shell::Bash)
+            .with_env(env.clone())
+            .with_cwd("/home/user".to_string());
+
+        assert_eq!(cmd.env, env);
+        assert_eq!(cmd.cwd, "/home/user");
+    }
+
+    #[test]
+    fn test_command_text_methods() {
+        let cmd = Command::new("  git status  ".to_string(), Shell::Bash);
+
+        assert_eq!(cmd.as_str(), "  git status  ");
+        assert_eq!(cmd.trimmed(), "git status");
+        assert!(!cmd.is_empty());
+
+        let empty_cmd = Command::new("   ".to_string(), Shell::Bash);
+        assert!(empty_cmd.is_empty());
+    }
+
+    #[test]
+    fn test_command_parsing_methods() {
+        let cmd = Command::new("git status --porcelain".to_string(), Shell::Bash);
+
+        assert_eq!(cmd.program(), Some("git"));
+        assert_eq!(cmd.arguments(), vec!["status", "--porcelain"]);
+        assert_eq!(cmd.argument_count(), 2);
+        assert!(cmd.has_arguments());
+        assert_eq!(cmd.argument(0), Some("status"));
+        assert_eq!(cmd.argument(1), Some("--porcelain"));
+        assert_eq!(cmd.argument(2), None);
+    }
+
+    #[test]
+    fn test_command_matching_methods() {
+        let cmd = Command::new("git push origin main".to_string(), Shell::Bash);
+
+        assert!(cmd.starts_with("git"));
+        assert!(cmd.starts_with("GIT")); // case insensitive
+        assert!(!cmd.starts_with("ls"));
+
+        assert!(cmd.contains_argument("push"));
+        assert!(cmd.contains_argument("PUSH")); // case insensitive
+        assert!(!cmd.contains_argument("pull"));
+    }
+
+    #[test]
+    fn test_command_parse() {
+        let cmd = Command::new("git status --porcelain".to_string(), Shell::Bash);
+        let parsed = cmd.parse().unwrap();
+
+        assert_eq!(parsed.program, "git");
+        assert_eq!(parsed.arguments, vec!["status", "--porcelain"]);
+        assert_eq!(parsed.original, "git status --porcelain");
+    }
+
+    #[test]
+    fn test_command_parse_empty() {
+        let cmd = Command::new("   ".to_string(), Shell::Bash);
+        assert!(cmd.parse().is_err());
+    }
+
+    #[test]
+    fn test_command_with_text() {
+        let original = Command::new("git status".to_string(), Shell::Bash);
+        let modified = original.with_text("git add .".to_string());
+
+        assert_eq!(modified.text, "git add .");
+        assert_eq!(modified.shell, original.shell);
+        assert_eq!(modified.cwd, original.cwd);
+    }
+
+    #[test]
+    fn test_command_age() {
+        let cmd = Command::new("git status".to_string(), Shell::Bash);
+
+        // Command should be very recent (just created)
+        assert!(cmd.age_seconds() < 5);
+        assert!(cmd.age_minutes() < 1);
+        assert!(cmd.is_recent());
+    }
+
+    #[test]
+    fn test_command_env_methods() {
+        let mut cmd = Command::new("git status".to_string(), Shell::Bash);
+
+        // Test setting and getting env vars
+        cmd.set_env("PATH".to_string(), "/usr/bin".to_string());
+        assert_eq!(cmd.get_env("PATH"), Some(&"/usr/bin".to_string()));
+        assert_eq!(cmd.get_env("NONEXISTENT"), None);
+
+        // Test removing env vars
+        let removed = cmd.remove_env("PATH");
+        assert_eq!(removed, Some("/usr/bin".to_string()));
+        assert_eq!(cmd.get_env("PATH"), None);
+    }
+
+    #[test]
+    fn test_command_display() {
+        let cmd = Command::new("git status".to_string(), Shell::Bash);
+        assert_eq!(format!("{}", cmd), "git status");
     }
 
     #[test]
