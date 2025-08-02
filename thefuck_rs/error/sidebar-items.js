@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["TheFuckError"],"trait":["ErrorContext"],"type":["TheFuckResult"]};

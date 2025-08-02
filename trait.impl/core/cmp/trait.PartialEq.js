@@ -1,0 +1,9 @@
+(function() {
+    var implementors = Object.fromEntries([["thefuck_rs",[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.88.0/core/cmp/trait.PartialEq.html\" title=\"trait core::cmp::PartialEq\">PartialEq</a> for <a class=\"enum\" href=\"thefuck_rs/types/enum.Shell.html\" title=\"enum thefuck_rs::types::Shell\">Shell</a>"],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.88.0/core/cmp/trait.PartialEq.html\" title=\"trait core::cmp::PartialEq\">PartialEq</a> for <a class=\"struct\" href=\"thefuck_rs/types/struct.Command.html\" title=\"struct thefuck_rs::types::Command\">Command</a>"],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.88.0/core/cmp/trait.PartialEq.html\" title=\"trait core::cmp::PartialEq\">PartialEq</a> for <a class=\"struct\" href=\"thefuck_rs/types/struct.CommandResult.html\" title=\"struct thefuck_rs::types::CommandResult\">CommandResult</a>"],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.88.0/core/cmp/trait.PartialEq.html\" title=\"trait core::cmp::PartialEq\">PartialEq</a> for <a class=\"struct\" href=\"thefuck_rs/types/struct.CorrectedCommand.html\" title=\"struct thefuck_rs::types::CorrectedCommand\">CorrectedCommand</a>"],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.88.0/core/cmp/trait.PartialEq.html\" title=\"trait core::cmp::PartialEq\">PartialEq</a> for <a class=\"struct\" href=\"thefuck_rs/types/struct.ParsedCommand.html\" title=\"struct thefuck_rs::types::ParsedCommand\">ParsedCommand</a>"]]]]);
+    if (window.register_implementors) {
+        window.register_implementors(implementors);
+    } else {
+        window.pending_implementors = implementors;
+    }
+})()
+//{"start":57,"fragment_lengths":[1452]}

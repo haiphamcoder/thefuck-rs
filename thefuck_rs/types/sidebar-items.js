@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Shell"],"struct":["Command","CommandResult","CorrectedCommand","ParsedCommand"]};
