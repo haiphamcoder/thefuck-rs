@@ -488,7 +488,7 @@ mod tests {
     #[test]
     fn test_command_display() {
         let cmd = Command::new("git status".to_string(), Shell::Bash);
-        assert_eq!(format!("{}", cmd), "git status");
+        assert_eq!(format!("{cmd}"), "git status");
     }
 
     #[test]

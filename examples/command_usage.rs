@@ -3,7 +3,7 @@ use thefuck_rs::{Command, Shell};
 fn main() {
     // Create a basic command
     let cmd = Command::new("git status --porcelain".to_string(), Shell::Bash);
-    println!("Original command: {}", cmd);
+    println!("Original command: {cmd}");
 
     // Basic parsing
     println!("Program: {:?}", cmd.program());
@@ -21,13 +21,13 @@ fn main() {
     // Command validation
     match cmd.validate() {
         Ok(()) => println!("Command is valid"),
-        Err(e) => println!("Command validation failed: {}", e),
+        Err(e) => println!("Command validation failed: {e}"),
     }
 
     // Parse command into structured format
     match cmd.parse() {
-        Ok(parsed) => println!("Parsed command: {}", parsed),
-        Err(e) => println!("Failed to parse command: {}", e),
+        Ok(parsed) => println!("Parsed command: {parsed}"),
+        Err(e) => println!("Failed to parse command: {e}"),
     }
 
     // Command with environment variables
@@ -54,6 +54,6 @@ fn main() {
 
     // Test command modification
     let modified_cmd = cmd.with_text("git add .".to_string());
-    println!("Modified command: {}", modified_cmd);
+    println!("Modified command: {modified_cmd}");
     println!("Modified program: {:?}", modified_cmd.program());
 }
